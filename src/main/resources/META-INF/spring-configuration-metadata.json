@@ -1,0 +1,86 @@
+{
+  "groups": [
+    {
+      "name": "app.auth",
+      "type": "com.a1a.shared.auth.infrastructure.config.AuthProperties",
+      "sourceType": "com.a1a.shared.auth.infrastructure.config.AuthProperties"
+    },
+    {
+      "name": "app.auth.jwks",
+      "type": "com.a1a.shared.auth.infrastructure.config.AuthProperties$JwksConfig",
+      "sourceType": "com.a1a.shared.auth.infrastructure.config.AuthProperties"
+    },
+    {
+      "name": "app.auth.permission",
+      "type": "com.a1a.shared.auth.infrastructure.config.AuthProperties$PermissionConfig",
+      "sourceType": "com.a1a.shared.auth.infrastructure.config.AuthProperties"
+    },
+    {
+      "name": "app.auth.cache",
+      "type": "com.a1a.shared.auth.infrastructure.config.AuthProperties$CacheConfig",
+      "sourceType": "com.a1a.shared.auth.infrastructure.config.AuthProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "app.auth.jwks.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Set to false to skip signature verification (dev only).",
+      "defaultValue": false
+    },
+    {
+      "name": "app.auth.jwks.url",
+      "type": "java.lang.String",
+      "description": "JWKS endpoint URL to fetch public/secret keys."
+    },
+    {
+      "name": "app.auth.jwks.connect-timeout",
+      "type": "java.time.Duration",
+      "description": "Connection timeout for JWKS requests.",
+      "defaultValue": "5s"
+    },
+    {
+      "name": "app.auth.permission.url",
+      "type": "java.lang.String",
+      "description": "Endpoint to fetch user permissions from Gateway."
+    },
+    {
+      "name": "app.auth.cache.type",
+      "type": "java.lang.String",
+      "description": "Type of cache: caffeine (in-memory) or redis (distributed).",
+      "defaultValue": "caffeine"
+    },
+    {
+      "name": "app.auth.cache.ttl",
+      "type": "java.time.Duration",
+      "description": "Time-to-live for cached keys and permissions.",
+      "defaultValue": "1h"
+    },
+    {
+      "name": "app.auth.security.white-list-urls",
+      "type": "java.util.List<java.lang.String>",
+      "description": "List of URLs that bypass authentication."
+    },
+    {
+      "name": "app.auth.cors.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable or disable CORS configuration.",
+      "defaultValue": true
+    }
+  ],
+  "hints": [
+    {
+      "name": "app.auth.cache.type",
+      "values": [
+        {
+          "value": "caffeine",
+          "description": "Local in-memory cache using Caffeine library."
+        },
+        {
+          "value": "redis",
+          "description": "Distributed cache using Redis (requires redis dependencies)."
+        }
+      ]
+    }
+  ]
+}

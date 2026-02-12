@@ -1,0 +1,3 @@
+com.a1a.shared.auth.infrastructure.config.autoconfigure.AuthAutoConfiguration
+com.a1a.shared.auth.infrastructure.config.autoconfigure.SecurityAutoConfiguration
+#com.a1a.shared.auth.infrastructure.config.autoconfigure.AuditAutoConfiguration
