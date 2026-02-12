@@ -7,21 +7,20 @@ import com.a1a.shared.auth.domain.exception.TokenVerificationException;
 import com.a1a.shared.auth.domain.model.UserContext;
 import com.a1a.shared.auth.infrastructure.config.AuthProperties;
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import javax.crypto.SecretKey;
 
 /**
  * Service for verifying and extracting user information from JWT tokens.
@@ -30,7 +29,7 @@ import javax.crypto.SecretKey;
  *
  * <ul>
  *   <li>Parses JWT tokens
- *   <li>Verifies signatures using HS512 algorithm
+ *   <li>Verifies signatures using RS256 algorithm (RSA with SHA-256)
  *   <li>Validates expiration
  *   <li>Maps claims to UserContext domain model
  * </ul>
@@ -83,14 +82,14 @@ public class TokenVerificationService implements TokenVerificationUseCase {
         }
 
         try {
-            SecretKey secretKey = jwksPort.getSecretKey();
-            MACVerifier verifier = new MACVerifier(secretKey);
+            RSAPublicKey publicKey = jwksPort.getPublicKey();
+            RSASSAVerifier verifier = new RSASSAVerifier(publicKey);
 
             if (!signedJWT.verify(verifier)) {
                 throw new TokenVerificationException("Invalid token signature");
             }
 
-            log.debug("Token signature verified successfully");
+            log.debug("Token signature verified successfully using RS256");
 
         } catch (JOSEException ex) {
             throw new TokenVerificationException("Failed to verify token signature", ex);

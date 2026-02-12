@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.crypto.SecretKey;
+import java.security.interfaces.RSAPublicKey;
 
 /**
  * Configuration class for IAM domain.
@@ -50,11 +51,11 @@ public class AuthConfig {
      * Creates a Caffeine-based cache for storing SecretKey instances.
      *
      * @param properties IAM configuration properties
-     * @return CachePort for caching SecretKey objects
+     * @return CachePort for caching publicKey objects
      */
     @Bean
-    public CachePort<String, SecretKey> secretKeyCache(AuthProperties properties) {
-        Cache<String, SecretKey> cache =
+    public CachePort<String, RSAPublicKey> publicKeyCache(AuthProperties properties) {
+        Cache<String, RSAPublicKey> cache =
                 Caffeine.newBuilder()
                         .maximumSize(properties.getCache().getMaxSize())
                         .expireAfterWrite(properties.getCache().getTtl())
@@ -63,13 +64,13 @@ public class AuthConfig {
         return new CaffeineAdapter<>(cache);
     }
 
-    /** JWKS adapter for fetching public/secret keys for token verification */
+    /** JWKS adapter for fetching public/public keys for token verification */
     @Bean
     public JwksPort jwksPort(
             WebClient.Builder webClientBuilder,
-            CachePort<String, SecretKey> secretKeyCache,
+            CachePort<String, RSAPublicKey> publicKeyCache,
             AuthProperties properties) {
-        return new JwksAdapter(webClientBuilder, secretKeyCache, properties);
+        return new JwksAdapter(webClientBuilder, publicKeyCache, properties);
     }
 
     /** Token verification service - main use case for JWT authentication */
